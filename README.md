@@ -1,7 +1,6 @@
-<B><i>WORKWFLOW CODE<B><i>
+<b>workflow code<b>
 
-
-<p>name: Node.js CI
+name: Node.js CI
 
 on:
   push:
@@ -14,17 +13,17 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+  runs-on: ubuntu-latest
 
-    strategy:
+  strategy:
       matrix:
         node-version: [20.x]
 
-    steps:
+  steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Node.js
+  - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
@@ -39,4 +38,4 @@ jobs:
       run: npm install
 
     - name: Start application
-      run: npm start<p>
+      run: npm start
