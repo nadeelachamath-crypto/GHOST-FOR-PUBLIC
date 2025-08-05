@@ -1,7 +1,7 @@
 <B><i>WORKWFLOW CODE<B><i>
 
 
-name: Node.js CI
+<p>name: Node.js CI
 
 on:
   push:
@@ -39,4 +39,4 @@ jobs:
       run: npm install
 
     - name: Start application
-      run: npm start
+      run: npm start<p>
