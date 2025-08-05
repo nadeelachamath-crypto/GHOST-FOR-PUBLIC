@@ -3,8 +3,8 @@
   "description": "BYTE-MD made for people on Earth",
   "logo": "https://www.dreamstime.com/illustration/halloween-ghost-clipart.html",
   "keywords": ["bot"],
-  "documentation-link": "",
-  "owner-verification": "",
+  "documentation-link": "https://github.com/nadeelachamath-crypto/GHOST-FOR-PUBLIC.git",
+  "owner-verification": "21",
   "env": {
     "SESSION_ID": {
       "description": "Put session id",
