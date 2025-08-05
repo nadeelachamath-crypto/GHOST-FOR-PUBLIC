@@ -1,6 +1,3 @@
-<B>WORKFLOW CODE<B>
-
-
 name: Node.js CI
 
 on:
