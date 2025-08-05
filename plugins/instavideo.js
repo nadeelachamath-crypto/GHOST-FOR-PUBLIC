@@ -6,7 +6,7 @@ const { tmpdir } = require("os");
 const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
 
-const cookiesPath = path.join(__dirname, "../instacookies.txt");
+const cookiesPath = path.join(__dirname, "cookies/instacookies.txt");
 
 cmd(
   {
