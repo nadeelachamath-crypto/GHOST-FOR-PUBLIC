@@ -3,7 +3,7 @@ const yts = require("yt-search");
 const path = require("path");
 const ytdlp = require("yt-dlp-exec");
 
-const cookiesPath = path.resolve(__dirname, "cookies/youtube_cookies.txt");
+const cookiesPath = path.resolve(__dirname, "../cookies/youtube_cookies.txt");
 
 cmd(
   {
