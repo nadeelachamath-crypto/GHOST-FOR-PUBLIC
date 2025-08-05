@@ -8,7 +8,7 @@ const path = require("path");
 // Optional: Set custom ffmpeg path if needed
 // ffmpeg.setFfmpegPath("./bin/ffmpeg");
 
-const COOKIES_PATH = "..cookies/youtube_cookies.txt";
+const COOKIES_PATH = "cookies/youtube_cookies.txt";
 
 cmd(
   {
