@@ -1,0 +1,25 @@
+{
+  "bot-name": "GHOST-MD",
+  "description": "BYTE-MD made for people on Earth",
+  "logo": "https://www.dreamstime.com/illustration/halloween-ghost-clipart.html",
+  "keywords": ["bot"],
+  "documentation-link": "",
+  "owner-verification": "",
+  "env": {
+    "SESSION_ID": {
+      "description": "Put session id",
+      "value": "",
+      "required": true
+    },
+    "PREFIX": {
+      "description": "Bot command prefix, (e.g, . , ! @ etc",
+      "value": ".",
+      "required": true  
+    },
+    "PREMIUM_USERS": {
+      "description": "premium users",
+      "value": "923072380**",
+      "required": false
+    }
+  }
+}
