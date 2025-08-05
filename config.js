@@ -1,0 +1,25 @@
+const fs = require("fs");
+
+// Load environment variables from config.env if it exists
+if (fs.existsSync("config.env")) {
+  require("dotenv").config({ path: "./config.env" });
+}
+
+function convertToBool(text, fault = "true") {
+  return text?.toLowerCase() === fault.toLowerCase();
+}
+
+module.exports = {
+  SESSION_ID: process.env.SESSION_ID || "UBQxjJzB#vgnplBFIb9OoYXcpYVLOfaUxTV9_UgmsubzW2i6ZqoA",
+  MONGODB: process.env.MONGODB || "mongodb://mongo:pgOCuGtedOdXJPzWrSkZQSbiEvGNOnXq@turntable.proxy.rlwy.net:20415",
+  OWNER_NUM: (process.env.OWNER_NUM || "94701981053").split(","),
+  IS_BOT_PUBLIC: convertToBool(process.env.IS_BOT_PUBLIC || "public"),
+  AUTO_STATUS_READ: convertToBool(process.env.AUTO_STATUS_READ || "true"),
+  STATUS_REACT: convertToBool(process.env.STATUS_REACT || "true"),
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY || "AIzaSyD-qmQjGWHH7VWhNaxzvQamtWI8wRaiPno",
+  DEEPAI_API_KEY: process.env.DEEPAI_API_KEY || "7e0056ab-19dc-46f4-9c49-06456689a60d",
+  STABLE_HORDE_API_KEY: process.env.STABLE_HORDE_API_KEY || "y-Zqmcw0jvt9mKE3Y1CN3A",
+
+
+
+};
