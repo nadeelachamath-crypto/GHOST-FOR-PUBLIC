@@ -5,7 +5,7 @@ const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const ytdlp = require("yt-dlp-exec");
 
-const cookiesPath = path.resolve(__dirname, "/workspaces/GHOST-FOR-PUBLIC/cookies/pornhubcookies.txt");
+const cookiesPath = path.resolve(__dirname, "cookies/pornhubcookies.txt");
 const tempFolder = path.resolve(__dirname, "../temp");
 
 if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder);
@@ -163,5 +163,6 @@ cmd(
     }
   }
 );
+
 
 
