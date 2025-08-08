@@ -1,74 +1,66 @@
 const { cmd } = require("../command");
 const yts = require("yt-search");
 const ytdlp = require("yt-dlp-exec");
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
+
+const cookiesPath = path.resolve(process.cwd(), "cookies/youtube_cookies.txt");
 
 cmd(
   {
     pattern: "video",
     react: "🎥",
-    desc: "Download YouTube video (max 720p MP4 with metadata)",
+    desc: "YouTube downloader (720p max, requires cookies)",
     category: "download",
     filename: __filename,
   },
   async (robin, mek, m, { from, q, reply }) => {
-    try {
-      if (!q) return reply("❌ Provide a YouTube name or URL.");
+    if (!q) return reply("❌ Please provide a YouTube URL or search term.");
 
+    if (!fs.existsSync(cookiesPath))
+      return reply(
+        "⚠️ `youtube_cookies.txt` not found in `/cookies/`. Please add your YouTube cookies for age-restricted videos."
+      );
+
+    try {
       let url = q;
+
       if (!q.includes("youtube.com") && !q.includes("youtu.be")) {
         const search = await yts(q);
         if (!search.videos.length) return reply("❌ No results found.");
         url = search.videos[0].url;
       }
 
-      // Get video info from yt-dlp (no cookies)
+      // Generate temp output file path
+      const outputPath = path.join(os.tmpdir(), `yt_${Date.now()}.mp4`);
+
+      // Download & merge best video <=720p + best audio
+      await ytdlp(url, {
+        format: "bestvideo[height<=720]+bestaudio/best[height<=720]",
+        mergeOutputFormat: "mp4",
+        output: outputPath,
+        noCheckCertificates: true,
+        quiet: true,
+        noWarnings: true,
+        cookies: cookiesPath,
+        addHeader: [
+          "referer:youtube.com",
+          "user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        ],
+      });
+
+      // Fetch video info for metadata
       const info = await ytdlp(url, {
         dumpSingleJson: true,
         noCheckCertificates: true,
-        preferFreeFormats: true,
-        addHeader: ["referer:youtube.com", "user-agent:Mozilla/5.0"],
+        quiet: true,
+        noWarnings: true,
+        cookies: cookiesPath,
       });
 
-      // Prefer <=720p MP4 with both audio & video
-      let format = info.formats.find(
-        (f) =>
-          f.ext === "mp4" &&
-          f.acodec !== "none" &&
-          f.vcodec !== "none" &&
-          f.height === 720 &&
-          f.url
-      );
-
-      if (!format) {
-        format = info.formats
-          .filter(
-            (f) =>
-              f.ext === "mp4" &&
-              f.acodec !== "none" &&
-              f.vcodec !== "none" &&
-              f.height &&
-              f.height <= 720 &&
-              f.url
-          )
-          .sort((a, b) => b.height - a.height)[0];
-      }
-
-      if (!format) {
-        format = info.formats.find(
-          (f) =>
-            f.ext === "mp4" &&
-            f.acodec !== "none" &&
-            f.vcodec !== "none" &&
-            f.url
-        );
-      }
-
-      if (!format || !format.url) {
-        return reply("❌ No valid MP4 format found.");
-      }
-
-      const sizeMB = format.filesize
-        ? (format.filesize / 1048576).toFixed(2) + " MB"
+      const sizeMB = fs.existsSync(outputPath)
+        ? (fs.statSync(outputPath).size / 1048576).toFixed(2) + " MB"
         : "Unknown";
       const views = info.view_count
         ? info.view_count.toLocaleString()
@@ -84,7 +76,7 @@ cmd(
 🕒 *Duration:* ${duration}
 👁 *Views:* ${views}
 📅 *Uploaded:* ${info.upload_date || "Unknown"}
-📦 *Quality:* ${format.height}p
+📦 *Quality:* 720p (merged)
 📁 *Size:* ${sizeMB}
 🔗 ${url}`;
 
@@ -95,19 +87,30 @@ cmd(
         { quoted: mek }
       );
 
-      // Send video
+      // Send video file
       await robin.sendMessage(
         from,
         {
-          video: { url: format.url },
+          video: fs.readFileSync(outputPath),
           mimetype: "video/mp4",
-          caption: `🎬 *${info.title}*\n📦 ${format.height}p • ${sizeMB}`,
+          caption: `🎬 *${info.title}*\n📦 720p merged video • ${sizeMB}`,
         },
         { quoted: mek }
       );
-    } catch (e) {
-      console.error("yt-dlp error:", e);
-      reply(`❌ Error: ${e.message || "Failed to fetch video."}`);
+
+      // Cleanup temp file
+      fs.unlinkSync(outputPath);
+    } catch (error) {
+      console.error("yt-dlp error:", error);
+      if (
+        error.stderr?.includes("Sign in to confirm") ||
+        error.message?.includes("Sign in to confirm")
+      ) {
+        return reply(
+          "⚠️ This video requires YouTube login. Please make sure your `youtube_cookies.txt` file is valid and up to date."
+        );
+      }
+      reply(`❌ Error: ${error.message || "Failed to download video."}`);
     }
   }
 );
