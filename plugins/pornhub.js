@@ -5,11 +5,10 @@ const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const ytdlp = require("yt-dlp-exec");
 
-// Resolve paths
+// Paths
 const cookiesPath = path.resolve(__dirname, "../cookies/pornhubcookies.txt");
 const tempFolder = path.resolve(__dirname, "../temp");
 
-// Ensure temp folder exists
 if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder);
 
 function parseNetscapeCookies(filePath, domain = "pornhub.com") {
@@ -43,8 +42,6 @@ cmd(
   },
   async (robin, mek, m, { from, q, reply }) => {
     try {
-      console.log("Cookies path:", cookiesPath);
-
       if (!fs.existsSync(cookiesPath))
         return reply(
           "⚠️ Pornhub cookies not found. Please add `pornhubcookies.txt` to the `/cookies` folder."
@@ -53,14 +50,14 @@ cmd(
       if (!q || !q.includes("pornhub.com"))
         return reply("❌ Please provide a valid Pornhub video URL.");
 
-      console.log("✅ Fetching video metadata with yt-dlp...");
+      console.log("Fetching video metadata with yt-dlp...");
       const info = await ytdlp(q, {
         dumpSingleJson: true,
         cookies: cookiesPath,
         noCheckCertificate: true,
       });
 
-      // Find best mp4 with audio+video ≤ 720p
+      // Select best mp4 with audio+video ≤ 720p
       let format =
         info.formats.find(
           (f) =>
@@ -121,11 +118,10 @@ cmd(
         await reply(metadata);
       }
 
-      // Download video to temp folder
+      // Download video to temp file
       const tempFile = path.join(tempFolder, `${uuidv4()}.mp4`);
-      console.log("📥 Downloading video...");
+      console.log("Downloading video to:", tempFile);
 
-      // Get cookies header
       const cookieHeader = parseNetscapeCookies(cookiesPath);
 
       const response = await axios.get(format.url, {
@@ -139,7 +135,6 @@ cmd(
         timeout: 180000,
       });
 
-      // Pipe video stream to file
       const writer = fs.createWriteStream(tempFile);
       response.data.pipe(writer);
 
@@ -148,13 +143,16 @@ cmd(
         writer.on("error", reject);
       });
 
-      console.log("✅ Download completed. Sending video...");
+      console.log("Download complete, reading file to buffer...");
 
-      // Send video as document
+      // Read entire video file into buffer
+      const buffer = fs.readFileSync(tempFile);
+
+      console.log("Sending video as document...");
       await robin.sendMessage(
         from,
         {
-          document: fs.createReadStream(tempFile),
+          document: buffer,
           mimetype: "video/mp4",
           fileName: `${info.title.replace(/[\\/:*?"<>|]/g, "").slice(0, 60)}.mp4`,
           caption: `🎬 *${info.title}*\n📦 ${format.height || "?"}p • ${sizeMB}`,
@@ -162,7 +160,7 @@ cmd(
         { quoted: mek }
       );
 
-      // Delete temp file after sending
+      // Clean up temp file
       fs.unlink(tempFile, (err) => {
         if (err) console.warn("Failed to delete temp file:", err);
         else console.log("Temp file deleted:", tempFile);
