@@ -1,9 +1,6 @@
 const { cmd } = require("../command");
 const yts = require("yt-search");
-const path = require("path");
 const ytdlp = require("yt-dlp-exec");
-
-const cookiesPath = path.resolve(__dirname, "cookies/youtube_cookies.txt");
 
 cmd(
   {
@@ -24,9 +21,12 @@ cmd(
         url = search.videos[0].url;
       }
 
+      // Get video info from yt-dlp (no cookies)
       const info = await ytdlp(url, {
         dumpSingleJson: true,
-        cookies: cookiesPath,
+        noCheckCertificates: true,
+        preferFreeFormats: true,
+        addHeader: ["referer:youtube.com", "user-agent:Mozilla/5.0"],
       });
 
       // Prefer <=720p MP4 with both audio & video
@@ -67,9 +67,15 @@ cmd(
         return reply("❌ No valid MP4 format found.");
       }
 
-      const sizeMB = format.filesize ? (format.filesize / 1048576).toFixed(2) + " MB" : "Unknown";
-      const views = info.view_count ? info.view_count.toLocaleString() : "Unknown";
-      const duration = info.duration ? new Date(info.duration * 1000).toISOString().substr(11, 8) : "Unknown";
+      const sizeMB = format.filesize
+        ? (format.filesize / 1048576).toFixed(2) + " MB"
+        : "Unknown";
+      const views = info.view_count
+        ? info.view_count.toLocaleString()
+        : "Unknown";
+      const duration = info.duration
+        ? new Date(info.duration * 1000).toISOString().substr(11, 8)
+        : "Unknown";
 
       const metadata = `👻 GHOST VIDEO DOWNLOADER
 
