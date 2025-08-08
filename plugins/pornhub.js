@@ -5,12 +5,20 @@ const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const ytdlp = require("yt-dlp-exec");
 
-const cookiesPath = path.resolve(__dirname, "cookies/pornhubcookies.txt");
+// Resolve paths
+const cookiesPath = path.resolve(__dirname, "../cookies/pornhubcookies.txt");
 const tempFolder = path.resolve(__dirname, "../temp");
 
+// Ensure temp folder exists
 if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder);
 
 function parseNetscapeCookies(filePath, domain = "pornhub.com") {
+  if (!filePath || typeof filePath !== "string" || filePath.trim() === "") {
+    throw new Error("Invalid cookies file path: " + JSON.stringify(filePath));
+  }
+  if (!fs.existsSync(filePath)) {
+    throw new Error("Cookies file does not exist: " + filePath);
+  }
   const lines = fs.readFileSync(filePath, "utf8").split(/\r?\n/);
   const cookies = [];
 
@@ -21,7 +29,6 @@ function parseNetscapeCookies(filePath, domain = "pornhub.com") {
       cookies.push(`${parts[5]}=${parts[6]}`);
     }
   }
-
   return cookies.join("; ");
 }
 
@@ -30,23 +37,30 @@ cmd(
     pattern: "pornhub",
     alias: ["ph", "pornhubdl"],
     react: "💦",
-    desc: "Download Pornhub video as document (max 720p)",
+    desc: "Download Pornhub video as document (max 720p, saved temp file, requires cookies)",
     category: "download",
     filename: __filename,
   },
   async (robin, mek, m, { from, q, reply }) => {
     try {
+      console.log("Cookies path:", cookiesPath);
+
+      if (!fs.existsSync(cookiesPath))
+        return reply(
+          "⚠️ Pornhub cookies not found. Please add `pornhubcookies.txt` to the `/cookies` folder."
+        );
+
       if (!q || !q.includes("pornhub.com"))
         return reply("❌ Please provide a valid Pornhub video URL.");
 
-      console.log("📥 Getting video info from yt-dlp...");
+      console.log("✅ Fetching video metadata with yt-dlp...");
       const info = await ytdlp(q, {
         dumpSingleJson: true,
         cookies: cookiesPath,
         noCheckCertificate: true,
       });
-      console.log("✅ yt-dlp metadata fetched.");
 
+      // Find best mp4 with audio+video ≤ 720p
       let format =
         info.formats.find(
           (f) =>
@@ -76,7 +90,7 @@ cmd(
         );
 
       if (!format || !format.url)
-        return reply("❌ No suitable video format found.");
+        return reply("❌ No suitable mp4 video format found.");
 
       const sizeMB = format.filesize
         ? (format.filesize / 1048576).toFixed(2) + " MB"
@@ -107,66 +121,55 @@ cmd(
         await reply(metadata);
       }
 
-      const safeTitle = info.title.replace(/[\\/:*?"<>|]/g, "").slice(0, 60);
-      const tempPath = path.join(tempFolder, `${uuidv4()}.mp4`);
+      // Download video to temp folder
+      const tempFile = path.join(tempFolder, `${uuidv4()}.mp4`);
+      console.log("📥 Downloading video...");
 
-      console.log("⬇️ Downloading video...");
+      // Get cookies header
+      const cookieHeader = parseNetscapeCookies(cookiesPath);
 
-      const videoStream = await axios.get(format.url, {
+      const response = await axios.get(format.url, {
         responseType: "stream",
         headers: {
           Referer: "https://www.pornhub.com",
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/115.0.0.0 Safari/537.36",
-          Cookie: parseNetscapeCookies(cookiesPath),
+          Cookie: cookieHeader,
         },
-        timeout: 60000,
+        timeout: 180000,
       });
 
-      const writer = fs.createWriteStream(tempPath);
-      videoStream.data.pipe(writer);
+      // Pipe video stream to file
+      const writer = fs.createWriteStream(tempFile);
+      response.data.pipe(writer);
 
       await new Promise((resolve, reject) => {
         writer.on("finish", resolve);
         writer.on("error", reject);
       });
 
-      if (!fs.existsSync(tempPath))
-        return reply("❌ Video file was not found.");
+      console.log("✅ Download completed. Sending video...");
 
-      const stats = fs.statSync(tempPath);
-      console.log(`✅ Download complete: ${(stats.size / 1048576).toFixed(2)} MB`);
-
-      console.log("📤 Sending video as document...");
-      const readStream = fs.createReadStream(tempPath);
-
+      // Send video as document
       await robin.sendMessage(
         from,
         {
-          document: { stream: readStream },
+          document: fs.createReadStream(tempFile),
           mimetype: "video/mp4",
-          fileName: `${safeTitle}.mp4`,
+          fileName: `${info.title.replace(/[\\/:*?"<>|]/g, "").slice(0, 60)}.mp4`,
           caption: `🎬 *${info.title}*\n📦 ${format.height || "?"}p • ${sizeMB}`,
         },
         { quoted: mek }
       );
 
-      readStream.on("close", () => {
-        fs.unlink(tempPath, (err) => {
-          if (err) console.warn("🧹 Failed to delete temp file:", err);
-          else console.log("🧹 Temp file deleted.");
-        });
+      // Delete temp file after sending
+      fs.unlink(tempFile, (err) => {
+        if (err) console.warn("Failed to delete temp file:", err);
+        else console.log("Temp file deleted:", tempFile);
       });
-    } catch (err) {
-      console.error("❌ Pornhub downloader error:", err);
-      reply(`❌ Error: ${err.message || "Unknown error"}`);
+    } catch (error) {
+      console.error("Pornhub downloader error:", error);
+      reply(`❌ Error: ${error.message || "Unknown error"}`);
     }
   }
 );
-
-
-
-
-
-
-
