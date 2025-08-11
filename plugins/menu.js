@@ -61,51 +61,39 @@ cmd(
       let madeMenu = `👻 *Hello ${pushname}*
 
 
-| *MAIN COMMANDS* |
-
+| _*MAIN COMMANDS*_ |
     👻 .menu
     👻 .alive 
     👻 .ping
     👻 .cleartemp <for song cmd bug fix>
-    👻 .auth <clear session> this is not for public use . admin only
-    
-    
-    
-| *NSFW COMMANDS* |
-
+    👻 .auth <clear session>
+     
+| _*NSFW COMMANDS*_ |
     👻 .nsfwimg <search tag if you want>
     👻 .xhamster <xhamster url>
     👻 .porngif <search tag if you want>
     👻 .hentai
     👻 .xvdl <xvideos url>
     
-    
-    
-| *DOWNLOAD COMMANDS* |
-
+| _*DOWNLOAD COMMANDS*_ |
     👻 .mega <mrga.nz url>
     👻 .download <direct download url>
     
-| *SOCIAL MEDIA DOWNLOAD COMMANDS* |
-
+| _*SOCIAL MEDIA DOWNLOAD COMMANDS*_ |
     👻 .song <song name>
     👻 .fb <fb video url>
     👻 .tiktok <tiktok url>
     👻 .video <yt video name>
     
-
-| *CONVERT COMMANDS* |
-
+| _*CONVERT COMMANDS*_ |
     👻 .sticker
     👻 .toimg
     
-| *SEARCH COMMANDS* |
-
+| _*SEARCH COMMANDS*_ |
     👻 .img <search tag>
     👻 .bing <search tag>
     👻 .ai <ai chat bot>
-    
-    
+
 🗿CRATED 𝐛𝐲 Nadeela Chamath🗿
 
 > 👻 GHOST MD MENU MSG
