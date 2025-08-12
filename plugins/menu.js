@@ -74,6 +74,7 @@ cmd(
     👻 .porngif <search tag if you want>
     👻 .hentai
     👻 .xvdl <xvideos url>
+    👻 .pornhub <pornhub url>
     
 | _*DOWNLOAD COMMANDS*_ |
     👻 .mega <mrga.nz url>
@@ -84,6 +85,7 @@ cmd(
     👻 .fb <fb video url>
     👻 .tiktok <tiktok url>
     👻 .video <yt video name>
+    👻 .ig <insta url>
     
 | _*CONVERT COMMANDS*_ |
     👻 .sticker
