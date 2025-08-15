@@ -32,8 +32,8 @@ jobs:
     - name: Install ffmpeg
       run: sudo apt update && sudo apt install ffmpeg -y
 
-    - name: Install dependencies
-      run: npm install
+    - name: Install npm dependencies
+      run: npm install && npm update
 
     - name: Start application
       run: npm start
