@@ -45,6 +45,7 @@
     "mime-types": "^3.0.1",
     "mongoose": "^8.15.1",
     "node-fetch": "^2.7.0",
+    "node-stream-zip": "^1.15.0",
     "pino": "^9.7.0",
     "play-dl": "^1.9.7",
     "pm2": "^6.0.8",
