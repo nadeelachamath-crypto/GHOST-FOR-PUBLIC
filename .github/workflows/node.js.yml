@@ -36,4 +36,4 @@ jobs:
       run: npm install && npm update
 
     - name: Start application
-      run: npm start
+      run: npm start 
