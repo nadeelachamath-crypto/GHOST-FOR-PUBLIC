@@ -1,5 +1,5 @@
 const { cmd } = require('../command');
-const { fetchJson } = require('../functions');
+const axios = require('axios');
 
 cmd({
     pattern: "hentai",
@@ -11,9 +11,11 @@ cmd({
     try {
         reply('🔍 Searching for hentai video...');
 
-        // Fetch from API
+        // Fetch from API using axios
         const searchVid = `https://apis-keith.vercel.app/dl/hentaivid`;
-        const response = await fetchJson(searchVid);
+        const { data: response } = await axios.get(searchVid, {
+            headers: { 'User-Agent': 'GHOST-BOT' }
+        });
 
         if (!response || !response.result || response.result.length === 0) {
             return reply('❌ No videos found.');
