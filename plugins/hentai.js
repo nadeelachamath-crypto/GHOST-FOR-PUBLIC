@@ -1,66 +1,48 @@
-const { cmd } = require("../command");
-const axios = require("axios");
+const { cmd } = require('../command');
+const { fetchJson } = require('../functions');
 
-cmd(
-  {
+cmd({
     pattern: "hentai",
-    react: "💓",
-    desc: "Send a random 3D hentai video from Rule34.xxx by tag",
+    react: '💓',
     category: "nsfw",
-    filename: __filename,
-  },
-  async (robin, mek, m, { q, reply, from }) => {
+    desc: "Send a 3D hentai video from PixelDrain",
+    filename: __filename
+}, async (conn, m, mek, { from, q, reply }) => {
     try {
-      const tag = q?.trim().replace(/\s+/g, "_") || "3d";
+        reply('🔍 Searching for hentai video...');
 
-      reply(`🔍 Searching Rule34.xxx for videos tagged: *${tag}*...`);
+        // Fetch from API
+        const searchVid = `https://apis-keith.vercel.app/dl/hentaivid`;
+        const response = await fetchJson(searchVid);
 
-      const apiUrl = `https://rule34.xxx/index.php?page=dapi&s=post&q=index&limit=100&json=1&tags=${encodeURIComponent(tag)}`;
-      const res = await axios.get(apiUrl, { headers: { "User-Agent": "GHOST-BOT" } });
+        if (!response || !response.result || response.result.length === 0) {
+            return reply('❌ No videos found.');
+        }
 
-      const posts = res.data;
-      if (!posts || posts.length === 0) {
-        return reply(`❌ No results found for tag: *${tag}*`);
-      }
+        // Select the first video
+        const selectVid = response.result[0];
 
-      const videos = posts.filter(post => post.file_url.endsWith(".mp4") || post.file_url.endsWith(".webm"));
+        // Video caption
+        const cap = `
+🎥 *Title:* ${selectVid.title}
+📂 *Category:* ${selectVid.category}
+👀 *Views:* ${selectVid.views_count}
+🔗 *Link:* ${selectVid.link}
+`;
 
-      if (videos.length === 0) {
-        return reply(`❌ No videos found for tag: *${tag}*`);
-      }
+        // Send video
+        await conn.sendMessage(
+            from,
+            {
+                video: { url: selectVid.media.video_url },
+                caption: cap,
+            },
+            { quoted: mek }
+        );
 
-      const selected = videos[Math.floor(Math.random() * videos.length)];
-      const videoUrl = selected.file_url;
-
-      if (!videoUrl.startsWith("http")) {
-        return reply("❌ Invalid video URL.");
-      }
-
-      const videoResp = await axios.get(videoUrl, {
-        responseType: "arraybuffer",
-        headers: { "User-Agent": "GHOST-BOT" },
-      });
-
-      if (videoResp.data.byteLength < 100000) {
-        return reply("❌ Video file too small or corrupted.");
-      }
-
-      const caption = `🎥 *Rule34.xxx Video*\n🔍 *Tag:* ${tag}\n🔗 https://rule34.xxx/index.php?page=post&s=view&id=${selected.id}`;
-
-      await robin.sendMessage(
-        from,
-        {
-          video: videoResp.data,
-          mimetype: videoUrl.endsWith(".mp4") ? "video/mp4" : "video/webm",
-          caption,
-        },
-        { quoted: mek }
-      );
-
-      reply("✅ Video sent!");
+        reply('✅ Video sent!');
     } catch (e) {
-      console.error("Rule34 video error:", e.message);
-      reply(`❌ Error: ${e.message || "Failed to fetch video."}`);
+        console.error('Hentai plugin error:', e);
+        reply(`❌ Failed to fetch video. Error: ${e.message || e}`);
     }
-  }
-);
+});
