@@ -10,7 +10,7 @@ function convertToBool(text, fault = "true") {
 }
 
 module.exports = {
-  SESSION_ID: process.env.SESSION_ID || "wcJSgIqS#glDOVIlBmWRKNIqGVJNF8hqcexTpe-vJmlHIohFWUUU",
+  SESSION_ID: process.env.SESSION_ID || "lRQFVLIA#yQ3-81kx5mnZ8njTPgcfsiu--PrqyQ0uFzUXf8YGuhY",
   MONGODB: process.env.MONGODB || "mongodb://mongo:bsTcmLaCsdNhQXXvIABjeNTcEkSiJuOh@hopper.proxy.rlwy.net:46137",
   OWNER_NUM: (process.env.OWNER_NUM || "94701981053").split(","),
   IS_BOT_PUBLIC: convertToBool(process.env.IS_BOT_PUBLIC || "public"),
