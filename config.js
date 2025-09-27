@@ -1,4 +1,4 @@
-const fs = require("fs");
+ttttttconst fs = require("fs");
 
 // Load environment variables from config.env if it exists
 if (fs.existsSync("config.env")) {
@@ -10,7 +10,7 @@ function convertToBool(text, fault = "true") {
 }
 
 module.exports = {
-  SESSION_ID: process.env.SESSION_ID || "QdAnHZSY#4rFouR8fpLNlsUkk26bo7AYLjo5-1grQfAhmqGq3CVI",
+  SESSION_ID: process.env.SESSION_ID || "4VoixAjR#gigexdNLHxnUoTYvMU-66o0pMs9YIEkoqzaW5zdC3Bw",
   MONGODB: process.env.MONGODB || "mongodb://mongo:bsTcmLaCsdNhQXXvIABjeNTcEkSiJuOh@hopper.proxy.rlwy.net:46137",
   OWNER_NUM: (process.env.OWNER_NUM || "94701981053").split(","),
   IS_BOT_PUBLIC: convertToBool(process.env.IS_BOT_PUBLIC || "public"),
