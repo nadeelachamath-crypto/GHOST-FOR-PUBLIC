@@ -3,7 +3,7 @@
   "description": "easy bot for all",
   "logo": "https://thumbs.dreamstime.com/b/halloween-ghost-clipart-background-ghost-silhouette-halloween-ghost-logo-isolated-white-background-vector-template-halloween-330896848.jpg",
   "keywords": ["bot"],
-  "documentation-link": "https://github.com/nadeelachamath-crypto/GHOST-FOR-PUBLIC.git",
+  "documentation-link": "https://xpro-botz-ofc.vercel.app/#",
   "owner-verification": "nadeelaff@gmail.com",
   "env": {
     "SESSION_ID": {
