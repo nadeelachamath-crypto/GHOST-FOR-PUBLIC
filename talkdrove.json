@@ -1,0 +1,25 @@
+{
+  "bot-name": "GHOST-MD",
+  "description": "easy bot for all",
+  "logo": "https://thumbs.dreamstime.com/b/halloween-ghost-clipart-background-ghost-silhouette-halloween-ghost-logo-isolated-white-background-vector-template-halloween-330896848.jpg",
+  "keywords": ["bot"],
+  "documentation-link": "https://github.com/nadeelachamath-crypto/GHOST-FOR-PUBLIC.git",
+  "owner-verification": "nadeelaff@gmail.com",
+  "env": {
+    "SESSION_ID": {
+      "description": "4VoixAjR#gigexdNLHxnUoTYvMU-66o0pMs9YIEkoqzaW5zdC3Bw",
+      "value": "",
+      "required": true
+    },
+    "PREFIX": {
+      "description": ".",
+      "value": ".",
+      "required": true  
+    },
+    "PREMIUM_USERS": {
+      "description": "premium users",
+      "value": "923072380**",
+      "required": false
+    }
+  }
+}
