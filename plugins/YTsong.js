@@ -70,7 +70,7 @@ cmd(
       await new Promise((resolve, reject) => {
         ffmpeg(webmPath)
           .audioCodec("libmp3lame")
-          .audioBitrate(128)
+          .audioBitrate(320)
           .on("end", resolve)
           .on("error", (err) => {
             console.error("❌ FFmpeg error:", err);
