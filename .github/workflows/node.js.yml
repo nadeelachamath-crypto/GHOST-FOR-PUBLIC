@@ -27,7 +27,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Install python dependencies
-      run: pip install yt-dlp -u
+      run: pip install yt-dlp -U
 
     - name: Install ffmpeg
       run: sudo apt update && sudo apt install ffmpeg -y
