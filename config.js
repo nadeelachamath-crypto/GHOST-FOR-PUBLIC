@@ -30,7 +30,7 @@ STATUS_REACT_EMOJI: "👻",  // emoji for status reaction
 STATUS_REPLY_TEXT: "🔥 Nice status!",
 MODE: "groups", // Options: "public" | "private" | "inbox" | "groups"
 PREFIX: ".",
-AUTO_FAKE_TYPING: true,
+AUTO_FAKE_TYPING: false,
 FAKE_TYPING_DELAY_MIN: 800,
 FAKE_TYPING_DELAY_MAX: 2000,
 
