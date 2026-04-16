@@ -15,7 +15,7 @@ function convertToBool(text, fault = "true") {
 module.exports = {
   SESSION_ID: process.env.SESSION_ID || "KEkljS6b#Bksgu4HFB7CdwK_sYE_mDrXplefWV-qQOc6VOMHIjtI",   /// <-- your session id hear (Session id recommended) // qr in terminal available 
   MONGODB: process.env.MONGODB || "mongodb://mongo:EgowtTVoQvkVCealeJJpzkkHjLHwYZNK@trolley.proxy.rlwy.net:19588", // change this if you have monogodb url
-  OWNER_NUM: (process.env.OWNER_NUM || "94701631571").split(","), // <-- your number 
+  OWNER_NUM: (process.env.OWNER_NUM || "94701981053").split(","), // <-- your number 
 
 
 OLLAMA_HOST: "https://ollama.com",
