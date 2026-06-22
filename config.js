@@ -13,7 +13,7 @@ function convertToBool(text, fault = "true") {
 }
 
 module.exports = {
-  SESSION_ID: process.env.SESSION_ID || "KEkljS6b#Bksgu4HFB7CdwK_sYE_mDrXplefWV-qQOc6VOMHIjtI",   /// <-- your session id hear (Session id recommended) // qr in terminal available 
+  SESSION_ID: process.env.SESSION_ID || "GHOST-Hh4heDu5dbjlmlKptz4i",   /// <-- your session id hear (Session id recommended) // qr in terminal available 
   MONGODB: process.env.MONGODB || "mongodb://mongo:THZOmEWvdSDWtDPDwaVHTTYNkiMaiCft@tramway.proxy.rlwy.net:28646", // change this if you have monogodb url
   OWNER_NUM: (process.env.OWNER_NUM || "94701981053").split(","), // <-- your number 
 
